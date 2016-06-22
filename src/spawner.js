@@ -12,12 +12,12 @@ var spawner = {
         Game.spawns.Spawn1.createCreep(moves,{role: role});
     },
     controlPopulation : function () {
-        if (Game.time % 30 ==0) {
+        if (Game.time % 30 ===0) {
             console.log('Controlling population..');
             // cleaning names
-            for(var name in Memory.creeps) {
-                if(!Game.creeps[name]) {
-                    delete Memory.creeps[name];
+            for(var name2 in Memory.creeps) {
+                if(!Game.creeps[name2]) {
+                    delete Memory.creeps[name2];
                 }
             }
             var populationCount = {
@@ -30,7 +30,7 @@ var spawner = {
                 harvester : 3,
                 builder : 3,
                 upgrader : 1,
-                repairer : 1
+                repairer : 3
             };
             for(var name in Game.creeps) {
                 var creep = Game.creeps[name];
@@ -45,5 +45,4 @@ var spawner = {
         }
     }
     
-}
-module.exports = spawner;
+};

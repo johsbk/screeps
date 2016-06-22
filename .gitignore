@@ -1,2 +1,4 @@
-Gruntfile.js
 node_modules
+config/*
+config/**/*
+dist/**/*
