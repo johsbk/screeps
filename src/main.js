@@ -1,30 +1,26 @@
+
+
 module.exports.loop = function () {
     spawner.controlPopulation();
-    /*var tower = Game.getObjectById('id357690');
-    if(tower) {
-        var closestDamagedStructure = tower.pos.findClosestByRange(FIND_STRUCTURES, {
-            filter: (structure) => structure.hits < structure.hitsMax
-        });
-        if(closestDamagedStructure) {
-            tower.repair(closestDamagedStructure);
+    flagHandler.attachDeposits();
+    flagHandler.attachRepairTargets();
+    for (var room in Game.rooms) {
+        var towers = Game.rooms[room].getTowers();
+        for (var tower in towers) {
+            try {
+                towers[tower].run();
+            } catch (err) {
+                console.log("Tower Error occured: "+err);
+            }
         }
-
-        var closestHostile = tower.pos.findClosestByRange(FIND_HOSTILE_CREEPS);
-        if(closestHostile) {
-            tower.attack(closestHostile);
-        }
-    }*/
+    }
 
     for(var name in Game.creeps) {
         var creep = Game.creeps[name];
-        if(creep.memory.role == 'harvester') {
-            roleHarvester.run(creep);
-        } else if(creep.memory.role == 'upgrader') {
-            roleUpgrader.run(creep);
-        } else if(creep.memory.role == 'builder') {
-            roleBuilder.run(creep);
-        } else if(creep.memory.role == 'repairer') {
-            roleRepairer.run(creep);
+        try {
+            creep.run();
+        } catch (err) {
+            console.log("Creep error occured: "+err);
         }
     }
 };

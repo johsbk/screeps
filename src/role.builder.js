@@ -2,7 +2,11 @@ var roleBuilder = {
 
     /** @param {Creep} creep **/
     run: function(creep) {
-
+    	if (creep.memory.temprole && creep.memory.temprole=='upgrader' && Game.time % 50 !==0) {
+            roleUpgrader.run(creep);
+            return;
+        }
+        creep.memory.temprole=undefined;
 	    if(creep.memory.building && creep.carry.energy === 0) {
             creep.memory.building = false;
 	    }
@@ -22,14 +26,14 @@ var roleBuilder = {
                     creep.moveTo(target);
                 } else if (res != OK) {
                 	console.log(creep.name +' builder stuck: '+ res);
+                	this.findTarget(creep);
                 }
+            } else {
+            	creep.memory.temprole = 'upgrader';
             }
 	    }
 	    else {
-	        var source = creep.pos.findClosestByRange(FIND_SOURCES);
-            if(creep.harvest(source) == ERR_NOT_IN_RANGE) {
-                creep.moveTo(source);
-            }
+            creep.findEnergy();
 	    }
 	},
 	findTarget : function (creep) {

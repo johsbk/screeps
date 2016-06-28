@@ -1,15 +1,16 @@
 
 var spawner = {
     roleMoves : {
-        'harvester' : [WORK,CARRY,MOVE],
-        'builder' : [WORK,CARRY,MOVE],
-        'upgrader' : [WORK,CARRY,MOVE],
-        'repairer' : [WORK,CARRY,MOVE]
+        'harvester' : [WORK,WORK,WORK,CARRY,CARRY,MOVE],
+        'carrier' : [CARRY,CARRY,MOVE,MOVE],
+        'builder' : [WORK,CARRY,CARRY,CARRY,MOVE,MOVE],
+        'upgrader' : [WORK,CARRY,CARRY,CARRY,MOVE,MOVE],
+        'repairer' : [WORK,CARRY,CARRY,MOVE,MOVE]
     },
-    spawn : function (role) {
+    spawn : function (role,room) {
         console.log('Spawning new: '+role);
         var moves = this.roleMoves[role];
-        Game.spawns.Spawn1.createCreep(moves,{role: role});
+        Game.spawns.Spawn1.createCreep(moves,{role: role,room:room});
     },
     controlPopulation : function () {
         if (Game.time % 30 ===0) {
@@ -20,26 +21,17 @@ var spawner = {
                     delete Memory.creeps[name2];
                 }
             }
-            var populationCount = {
-                harvester : 0,
-                builder : 0,
-                upgrader : 0,
-                repairer : 0
-            };
-            var minCount = {
-                harvester : 3,
-                builder : 3,
-                upgrader : 1,
-                repairer : 3
-            };
-            for(var name in Game.creeps) {
-                var creep = Game.creeps[name];
-                populationCount[creep.memory.role] = populationCount[creep.memory.role]+1;
-            }
-            for (var role in populationCount) {
-                console.log("Role ["+role+"] count: "+populationCount[role]);
-                if (populationCount[role] < minCount[role]) {
-                    this.spawn(role);
+            var spawning = false;
+            for (var roomName in Game.rooms) {
+                var room = Game.rooms[roomName];
+                var populationCount = room.getPopulationCount();
+                var minCount = room.getPopulationMin();
+                for (var role in populationCount) {
+                    console.log("Role ["+role+"] count: "+populationCount[role]);
+                    if (populationCount[role] < minCount[role] && !spawning) {
+                        spawning =true;
+                        this.spawn(role,roomName);
+                    }
                 }
             }
         }
